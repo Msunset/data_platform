@@ -79,7 +79,7 @@
         from en_user
     </select>
 
-
+<!--分页-->
     <select id="selectPage" resultType="User">
         select name,sex,idcard,phone,age,reg_time,client_area,client_source,status
         from en_user
