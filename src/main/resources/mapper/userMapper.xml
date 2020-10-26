@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangban.data_platform.mapper.UserMapper">
+
+
+    <select id="findById"  resultType="com.xiangban.data_platform.domain.User">
+
+        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status
+        from en_user
+        where id = #{id}
+    </select>
+
+    <select id="findByName" parameterType="java.lang.String" resultType="com.xiangban.data_platform.domain.User">
+
+        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status
+        from en_user
+        where name like '%${name}%';
+
+    </select>
+    <select id="findByPhone" parameterType="java.lang.String" resultType="com.xiangban.data_platform.domain.User">
+        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status from en_user
+        where phone=#{phone}
+    </select>
+
+    <insert id="saveUser" parameterType="com.xiangban.data_platform.domain.User">
+
+        insert into en_user(name,sex,idcard,phone,age,reg_time,client_area,client_source,status)
+        values
+        (
+        #{name,jdbcType=VARCHAR},
+        #{sex,jdbcType=VARCHAR},
+        #{idcard,jdbcType=VARCHAR},
+        #{phone,jdbcType=VARCHAR},
+        #{age,jdbcType=INTEGER},
+        #{regTime,jdbcType=TIMESTAMP},
+        #{clientArea,jdbcType=VARCHAR},
+        #{clientSource,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER}
+        )
+    </insert>
+
+    <delete id="deleteAll" parameterType="com.xiangban.data_platform.domain.User" >
+        delete from en_user
+        where id=#{id}
+
+    </delete>
+
+    <update id="updateUser" parameterType="com.xiangban.data_platform.domain.User">
+        update en_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name != null">name=#{name,jdbcType=VARCHAR},</if>
+            <if test="sex != null">sex=#{sex,jdbcType=VARCHAR},</if>
+            <if test="age != null">age=#{age,jdbcType=INTEGER},</if>
+            <if test="phone != null">phone=#{phone,jdbcType=VARCHAR},</if>
+            <if test="idcard != null">idcard=#{idcard,jdbcType=VARCHAR},</if>
+            <if test="regTime != null">reg_time=#{regTime,jdbcType=TIMESTAMP},</if>
+            <if test="clientArea != null">client_area=#{clientArea,jdbcType=VARCHAR},</if>
+            <if test="clientSource != null">client_source=#{clientSource,jdbcType=VARCHAR},</if>
+            <if test="status != null">status=#{status,jdbcType=INTEGER}</if>
+        </trim>
+        where
+        id=#{id}
+    </update>
+
+
+    <select id="login"  resultType="com.xiangban.data_platform.domain.User">
+
+        select *
+        from en_user
+        where username=#{username} and password=#{password}
+
+
+
+
+    </select>
+
+    <select id="findAll" resultType="User">
+        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status
+        from en_user
+    </select>
+
+
+    <select id="selectPage" resultType="User">
+        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status
+        from en_user
+    </select>
+
+
+
+
+
+
+
+</mapper>
