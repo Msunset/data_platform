@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+# Created by .ignore support plugin (liyh)
+.idea
+*.iml
+target
