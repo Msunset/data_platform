@@ -3,87 +3,194 @@
 <mapper namespace="com.xiangban.data_platform.mapper.UserMapper">
 
 
-    <select id="findById"  resultType="com.xiangban.data_platform.domain.User">
+<!--    <select id="findById"  resultType="com.xiangban.data_platform.domain.User">-->
 
-        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status
-        from en_user
-        where id = #{id}
-    </select>
+<!--        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status-->
+<!--        from en_user-->
+<!--        where id = #{id}-->
+<!--    </select>-->
 
-    <select id="findByName" parameterType="java.lang.String" resultType="com.xiangban.data_platform.domain.User">
+<!--    <select id="findByName" parameterType="java.lang.String" resultType="com.xiangban.data_platform.domain.User">-->
 
-        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status
-        from en_user
-        where name like '%${name}%';
+<!--        select name,sex,idcard,phone,age,reg_time,interest,need,client_area,client_source,status-->
+<!--        from en_user-->
+<!--        where name like '%${name}%';-->
 
-    </select>
+<!--    </select>-->
     <select id="findByPhone" parameterType="java.lang.String" resultType="com.xiangban.data_platform.domain.User">
-        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status from en_user
+        select
+        userid,
+        nick_name,
+        phone,
+        sex,
+        idcard,
+        age,
+        status,
+        create_time,
+        warnusername,
+        warnusermobile,
+        gsource,
+        is_blind,
+        address,
+        hobby,
+        homemaking_service,
+        eat_point,
+        price,
+        type,
+        point,
+        birthday,
+        avatar,
+        reg_address,
+        platform
+        from user
         where phone=#{phone}
     </select>
 
     <insert id="saveUser" parameterType="com.xiangban.data_platform.domain.User">
-
-        insert into en_user(name,sex,idcard,phone,age,reg_time,client_area,client_source,status)
+        insert into user(
+        nick_name,
+        phone,
+        sex,
+        idcard,
+        age,
+        status,
+        create_time,
+        warnusername,
+        warnusermobile,
+        gsource,
+        is_blind,
+        address,
+        hobby,
+        homemaking_service,
+        eat_point,
+        price,
+        type,
+        point,
+        birthday,
+        avatar,
+        reg_address,
+        platform)
         values
-        (
-        #{name,jdbcType=VARCHAR},
-        #{sex,jdbcType=VARCHAR},
-        #{idcard,jdbcType=VARCHAR},
-        #{phone,jdbcType=VARCHAR},
-        #{age,jdbcType=INTEGER},
-        #{regTime,jdbcType=TIMESTAMP},
-        #{clientArea,jdbcType=VARCHAR},
-        #{clientSource,jdbcType=VARCHAR},
-        #{status,jdbcType=INTEGER}
-        )
+        ( #{nickName,jdbcType=LONGVARCHAR},
+          #{phone,jdbcType=LONGVARCHAR},
+          #{sex,jdbcType=LONGVARCHAR},
+          #{idcard,jdbcType=LONGVARCHAR},
+          #{age,jdbcType=LONGVARCHAR},
+          #{status,jdbcType=LONGVARCHAR},
+          #{createTime,jdbcType=TIMESTAMP},
+          #{warnusername,jdbcType=LONGVARCHAR},
+          #{warnusermobile,jdbcType=LONGVARCHAR},
+          #{gsource,jdbcType=LONGVARCHAR},
+          #{isBlind,jdbcType=LONGVARCHAR},
+          #{address,jdbcType=LONGVARCHAR},
+          #{hobby,jdbcType=LONGVARCHAR},
+          #{homemakingService,jdbcType=LONGVARCHAR},
+          #{eatPoint,jdbcType=LONGVARCHAR},
+          #{price,jdbcType=DECIMAL},
+          #{type,jdbcType=LONGVARCHAR},
+          #{point,jdbcType=LONGVARCHAR},
+          #{birthday,jdbcType=TIMESTAMP},
+          #{avatar,jdbcType=LONGVARCHAR},
+          #{regAddress,jdbcType=LONGVARCHAR},
+          #{platform,jdbcType=LONGVARCHAR})
     </insert>
 
-    <delete id="deleteAll" parameterType="com.xiangban.data_platform.domain.User" >
-        delete from en_user
-        where id=#{id}
+    <update id="deleteAll" parameterType="com.xiangban.data_platform.domain.User" >
+        update user
+        set status='-1'
+        where userid=#{userid}
 
-    </delete>
-
-    <update id="updateUser" parameterType="com.xiangban.data_platform.domain.User">
-        update en_user
-        <trim prefix="set" suffixOverrides=",">
-            <if test="name != null">name=#{name,jdbcType=VARCHAR},</if>
-            <if test="sex != null">sex=#{sex,jdbcType=VARCHAR},</if>
-            <if test="age != null">age=#{age,jdbcType=INTEGER},</if>
-            <if test="phone != null">phone=#{phone,jdbcType=VARCHAR},</if>
-            <if test="idcard != null">idcard=#{idcard,jdbcType=VARCHAR},</if>
-            <if test="regTime != null">reg_time=#{regTime,jdbcType=TIMESTAMP},</if>
-            <if test="clientArea != null">client_area=#{clientArea,jdbcType=VARCHAR},</if>
-            <if test="clientSource != null">client_source=#{clientSource,jdbcType=VARCHAR},</if>
-            <if test="status != null">status=#{status,jdbcType=INTEGER}</if>
-        </trim>
-        where
-        id=#{id}
     </update>
 
+    <update id="updateUser" parameterType="com.xiangban.data_platform.domain.User">
+        update user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="nickName != null">nick_name= #{nickName,jdbcType=LONGVARCHAR},</if>
+            <if test="phone != null">phone= #{phone,jdbcType=LONGVARCHAR},</if>
+            <if test="sex != null">sex= #{sex,jdbcType=LONGVARCHAR},</if>
+            <if test="idcard != null">idcard= #{idcard,jdbcType=LONGVARCHAR},</if>
+            <if test="age != null">age = #{age,jdbcType=LONGVARCHAR},</if>
+            <if test="status != null">status = #{status,jdbcType=LONGVARCHAR},</if>
+            <if test="createTime != null">create_time = #{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="warnusername != null">warnusername = #{warnusername,jdbcType=LONGVARCHAR},</if>
+            <if test="warnusermobile != null">warnusermobile = #{warnusermobile,jdbcType=LONGVARCHAR},</if>
+            <if test="gsource != null">gsource= #{gsource,jdbcType=LONGVARCHAR},</if>
+            <if test="isBlind != null">is_blind= #{isBlind,jdbcType=LONGVARCHAR},</if>
+            <if test="address != null">address = #{address,jdbcType=LONGVARCHAR},</if>
+            <if test="hobby != null">hobby = #{hobby,jdbcType=LONGVARCHAR},</if>
+            <if test="homemakingService != null">homemaking_service = #{homemakingService,jdbcType=LONGVARCHAR},</if>
+            <if test="eatPoint != null">eat_point = #{eatPoint,jdbcType=LONGVARCHAR},</if>
+            <if test="price != null">price = #{price,jdbcType=DECIMAL},</if>
+            <if test="type != null">type= #{type,jdbcType=LONGVARCHAR},</if>
+            <if test="point != null">point = #{point,jdbcType=LONGVARCHAR},</if>
+            <if test="birthday != null">birthday = #{birthday,jdbcType=TIMESTAMP},</if>
+            <if test="avatar != null">avatar = #{avatar,jdbcType=LONGVARCHAR},</if>
+            <if test="regAddress != null">reg_address= #{regAddress,jdbcType=LONGVARCHAR},</if>
+            <if test="platform != null">platform = #{platform,jdbcType=LONGVARCHAR}</if>
+        </trim>
+        where
+        userid=#{userid}
+    </update>
 
+<!--登录-->
     <select id="login"  resultType="com.xiangban.data_platform.domain.User">
-
-        select *
-        from en_user
+        select username,password,userid,nick_name
+        from user
         where username=#{username} and password=#{password}
-
-
-
-
     </select>
 
-    <select id="findAll" resultType="User">
-        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status
-        from en_user
+<!--    <select id="findAll" resultType="User">-->
+<!--        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status-->
+<!--        from en_user-->
+<!--    </select>-->
+
+<!--&lt;!&ndash;分页&ndash;&gt;-->
+<!--    <select id="selectPage" resultType="User">-->
+<!--        select id,name,sex,idcard,phone,age,reg_time,interest,need,client_area,client_source,status-->
+<!--        from en_user-->
+
+<!--    </select>-->
+
+    <!--分页-->
+    <select id="selectPage" resultType="User" parameterType="com.xiangban.data_platform.domain.User">
+        select
+        `nick_name`,
+        `phone`,
+        `sex`,
+        `idcard`,
+        `age`,
+        `status`,
+        `create_time`,
+        `warnusername`,
+        `warnusermobile`,
+        `gsource`,
+        `is_blind`,
+        `address`,
+        `hobby`,
+        `homemaking_service`,
+        `eat_point`,
+        `price`,
+        `type`,
+        `point`,
+        `birthday`,
+        `avatar`,
+        `reg_address`,
+        `platform`
+        from user
+        <trim prefix="where" prefixOverrides="and | or">
+
+            <if test="nickName != null and nickName !=''" >
+                and nick_name like concat('%',#{nickName},'%')
+            </if>
+            <if test="platform != null and platform !=''" >
+                and platform=#{platform}
+            </if>
+        </trim>
     </select>
 
-<!--分页-->
-    <select id="selectPage" resultType="User">
-        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status
-        from en_user
-    </select>
+
+
+
 
 
 

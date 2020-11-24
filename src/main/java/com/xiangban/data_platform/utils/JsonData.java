@@ -43,6 +43,14 @@ public class JsonData {
     public static JsonData buildSuccess(Object data){
         return new JsonData(1,data,null);
     }
+    /**
+     * 成功，返回数据
+     * @param 
+     * @return
+     */
+    public static JsonData buildSuccess(String msg){
+        return new JsonData(1,null,msg);
+    }
 
 
     /**
