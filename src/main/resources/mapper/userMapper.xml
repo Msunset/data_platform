@@ -2,23 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiangban.data_platform.mapper.UserMapper">
 
-
-<!--    <select id="findById"  resultType="com.xiangban.data_platform.domain.User">-->
-
-<!--        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status-->
-<!--        from en_user-->
-<!--        where id = #{id}-->
-<!--    </select>-->
-
-<!--    <select id="findByName" parameterType="java.lang.String" resultType="com.xiangban.data_platform.domain.User">-->
-
-<!--        select name,sex,idcard,phone,age,reg_time,interest,need,client_area,client_source,status-->
-<!--        from en_user-->
-<!--        where name like '%${name}%';-->
-
-<!--    </select>-->
     <select id="findByPhone" parameterType="java.lang.String" resultType="com.xiangban.data_platform.domain.User">
         select
+        id,
         userid,
         nick_name,
         phone,
@@ -43,17 +29,19 @@
         reg_address,
         platform
         from user
-        where phone=#{phone}
+        where phone=#{phone} and platform=#{platform}
     </select>
 
-    <insert id="saveUser" parameterType="com.xiangban.data_platform.domain.User">
+    <insert id="saveUser" parameterType="com.xiangban.data_platform.domain.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into user(
+        userid,
+        username,
+        password,
         nick_name,
         phone,
         sex,
         idcard,
         age,
-        status,
         create_time,
         warnusername,
         warnusermobile,
@@ -69,14 +57,18 @@
         birthday,
         avatar,
         reg_address,
+        customer_service,
+        remarks,
         platform)
         values
-        ( #{nickName,jdbcType=LONGVARCHAR},
+        ( #{userid,jdbcType=LONGVARCHAR},
+          #{username,jdbcType=LONGVARCHAR},
+          #{password,jdbcType=LONGVARCHAR},
+          #{nickName,jdbcType=LONGVARCHAR},
           #{phone,jdbcType=LONGVARCHAR},
           #{sex,jdbcType=LONGVARCHAR},
           #{idcard,jdbcType=LONGVARCHAR},
           #{age,jdbcType=LONGVARCHAR},
-          #{status,jdbcType=LONGVARCHAR},
           #{createTime,jdbcType=TIMESTAMP},
           #{warnusername,jdbcType=LONGVARCHAR},
           #{warnusermobile,jdbcType=LONGVARCHAR},
@@ -92,15 +84,21 @@
           #{birthday,jdbcType=TIMESTAMP},
           #{avatar,jdbcType=LONGVARCHAR},
           #{regAddress,jdbcType=LONGVARCHAR},
+          #{customerService,jdbcType=LONGVARCHAR},
+          #{remarks,jdbcType=LONGVARCHAR},
           #{platform,jdbcType=LONGVARCHAR})
     </insert>
 
-    <update id="deleteAll" parameterType="com.xiangban.data_platform.domain.User" >
+    <update id="deleteAll" parameterType="com.xiangban.data_platform.domain.User"><!--软删除，标识-->
         update user
         set status='-1'
-        where userid=#{userid}
-
+        where id=#{id}
     </update>
+
+    <delete id="delete" parameterType="com.xiangban.data_platform.domain.User">
+        delete  from user
+        where id=#{id}
+    </delete>
 
     <update id="updateUser" parameterType="com.xiangban.data_platform.domain.User">
         update user
@@ -126,34 +124,27 @@
             <if test="birthday != null">birthday = #{birthday,jdbcType=TIMESTAMP},</if>
             <if test="avatar != null">avatar = #{avatar,jdbcType=LONGVARCHAR},</if>
             <if test="regAddress != null">reg_address= #{regAddress,jdbcType=LONGVARCHAR},</if>
+            <if test="customerService != null">customer_service= #{customerService,jdbcType=LONGVARCHAR},</if>
+            <if test="remarks != null">remarks= #{remarks,jdbcType=LONGVARCHAR},</if>
             <if test="platform != null">platform = #{platform,jdbcType=LONGVARCHAR}</if>
         </trim>
         where
-        userid=#{userid}
+        id=#{id}
     </update>
 
 <!--登录-->
     <select id="login"  resultType="com.xiangban.data_platform.domain.User">
-        select username,password,userid,nick_name
+        select username,password,id,nick_name
         from user
         where username=#{username} and password=#{password}
     </select>
 
-<!--    <select id="findAll" resultType="User">-->
-<!--        select name,sex,idcard,phone,age,reg_time,client_area,client_source,status-->
-<!--        from en_user-->
-<!--    </select>-->
-
-<!--&lt;!&ndash;分页&ndash;&gt;-->
-<!--    <select id="selectPage" resultType="User">-->
-<!--        select id,name,sex,idcard,phone,age,reg_time,interest,need,client_area,client_source,status-->
-<!--        from en_user-->
-
-<!--    </select>-->
 
     <!--分页-->
     <select id="selectPage" resultType="User" parameterType="com.xiangban.data_platform.domain.User">
         select
+        `id`,
+        `userid`,
         `nick_name`,
         `phone`,
         `sex`,
@@ -175,18 +166,129 @@
         `birthday`,
         `avatar`,
         `reg_address`,
+        `customer_service`,
+        `remarks`,
         `platform`
-        from user
+        from user 
         <trim prefix="where" prefixOverrides="and | or">
 
             <if test="nickName != null and nickName !=''" >
                 and nick_name like concat('%',#{nickName},'%')
             </if>
-            <if test="platform != null and platform !=''" >
+            <if test="platform != null and platform !=0" >
                 and platform=#{platform}
+            </if>
+            <if test="id != null and id !=''and id !=0">
+                and id=#{id}
+            </if>
+            <if test="phone != null and phone != ''">
+                and (phone =#{phone} or nick_name like concat('%',#{phone},'%'))
+            </if>
+            <if test="customerService != null and customerService != ''">
+                and customer_service =#{customerService}
+            </if>
+            <if test="gsource != null and gsource != ''">
+                and gsource =#{gsource}
+            </if>
+
+            <if test="avatar != null and avatar != ''">
+                and id in (select user_id from  quenstion_answer where answer_id in (#{avatar}))
             </if>
         </trim>
     </select>
+
+    
+    <select id="selectGsource"  resultType="com.xiangban.data_platform.domain.dto.Gsource">
+        SELECT  `user`.gsource FROM `user` WHERE gsource is not NULL and gsource!=''  group by gsource
+    </select>
+    
+    <update id="resetting" parameterType="com.xiangban.data_platform.domain.dto.CustomerServiceDto">
+        update `user`
+        set `user`.customer_service='0'
+        WHERE `user`.customer_service=#{customerService}
+    </update>
+
+    <update id="updateCustomerService" parameterType="com.xiangban.data_platform.domain.dto.CustomerServiceDto">
+        UPDATE `user`
+        SET `user`.customer_service=#{customerService}
+        WHERE `user`.id
+        in
+        <foreach collection="id" item="list" open="("  separator="," close=")">
+            #{list}
+        </foreach>
+    </update>
+
+    <select id="selectUser" parameterType="java.lang.Integer" resultType="com.xiangban.data_platform.domain.User">
+         select
+        `id`,
+        `userid`,
+        `nick_name`,
+        `phone`,
+        `sex`,
+        `idcard`,
+        `age`,
+        `status`,
+        `create_time`,
+        `warnusername`,
+        `warnusermobile`,
+        `gsource`,
+        `is_blind`,
+        `address`,
+        `hobby`,
+        `homemaking_service`,
+        `eat_point`,
+        `price`,
+        `type`,
+        `point`,
+        `birthday`,
+        `avatar`,
+        `reg_address`,
+        `customer_service`,
+        `remarks`,
+        `platform`
+        from `user`
+        where id=#{id}
+    </select>
+
+    <select id="selectUserByPhone" parameterType="java.lang.String" resultType="com.xiangban.data_platform.domain.User">
+         select
+        `id`,
+        `userid`,
+        `nick_name`,
+        `phone`,
+        `sex`,
+        `idcard`,
+        `age`,
+        `status`,
+        `create_time`,
+        `warnusername`,
+        `warnusermobile`,
+        `gsource`,
+        `is_blind`,
+        `address`,
+        `hobby`,
+        `homemaking_service`,
+        `eat_point`,
+        `price`,
+        `type`,
+        `point`,
+        `birthday`,
+        `avatar`,
+        `reg_address`,
+        `customer_service`,
+        `remarks`,
+        `platform`
+        from `user`
+        where phone=#{phone}
+    </select>
+ 
+    <select id="selectAnswerByUserIdAndQuenstionId"  resultType="com.xiangban.data_platform.domain.vo.AnswerVo">
+        select answer.answer from  answer where id in (select answer_id from quenstion_answer where user_id=#{userId} and quenstion_id=#{quenstionId})
+    </select>
+
+
+
+
 
 
 

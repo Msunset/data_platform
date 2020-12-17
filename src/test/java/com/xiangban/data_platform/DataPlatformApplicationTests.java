@@ -6,28 +6,38 @@ import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 @SpringBootTest
 class DataPlatformApplicationTests {
 
+//	@Test
+//	public static void main(){
+//	Map<String, Object> map=new HashMap<String, Object>();
+//	map.put("id", "sunny");
+//	map.put("value", "syl");
+////	Set<String> get = map.keySet();
+//	for (String test:map.keySet()){
+//		System.out.println(test+","+map.get(test));
+//	}
+//	}
+
 	@Test
-	public void testGeneJWT(){
+	public static void main(){
 
-		User user = new User();
-		user.setUserid(66);
-		user.setNickName("ABC");
 
-		String jsonWebToken = JWTUtils.getJsonWebToken(user);
-		System.out.println(jsonWebToken);
 
-		try {
-			Thread.sleep(4000L);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		Claims claims = JWTUtils.checkJWT(jsonWebToken);
-		System.out.println(claims.get("name"));
 
 	}
+
+
+
+
+
+
+
+
 
 }

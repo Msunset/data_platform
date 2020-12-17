@@ -1,4 +1,4 @@
-package com.xiangban.data_platform.dto;
+package com.xiangban.data_platform.domain.dto;
 
 import lombok.Data;
 

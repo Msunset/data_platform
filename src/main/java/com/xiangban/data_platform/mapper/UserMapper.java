@@ -1,44 +1,29 @@
 package com.xiangban.data_platform.mapper;
 
 import com.xiangban.data_platform.domain.User;
-import org.apache.ibatis.annotations.Mapper;
+import com.xiangban.data_platform.domain.dto.*;
+import com.xiangban.data_platform.domain.vo.AnswerVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 
 @Repository
 public interface UserMapper {
 
-
-//    /**
-//     * 查找所有用户信息
-//     * @return
-//     */
-//    List<User> findAll();
-
-//    /**
-//     * 根据id查询用户信息
-//     * @param id
-//     * @return
-//     */
-//    List<User> findById(Integer id);
-
-//    /**
-//     * 姓名模糊查询
-//     * @param name
-//     * @return
-//     */
-//    List<User> findByName(String name);
-
     /**
-     * 手机号查询
-     * @param phone
+     * 手机号和平台同时查询
+     * @param user
      * @return
      */
-    User findByPhone (String phone);
+     User findByPhone (User user);
+    /**
+     * 手机号和平台同时查询
+     * @param user
+     * @return
+     */
+    User findByid (User user);
 
     /**
      * 添加用户
@@ -52,7 +37,7 @@ public interface UserMapper {
      * @param userid
      * @return
      */
-    int deleteAll(User userid);
+    int delete(User userid);
 
     /**
      * 修改用户
@@ -79,4 +64,19 @@ public interface UserMapper {
      * @return
      */
     List<User> selectPage(User user);
+    //查询街道来源
+    List<Object> selectGsource();
+    //修改客服归属根据传来的人员id
+    void updateCustomerService(CustomerServiceDto customerServiceDto);
+    //重置客服归属信息
+    void resetting(CustomerServiceDto customerServiceDto );
+
+    User selectUser(Integer id);
+
+    User selectUserByPhone(String phone);
+
+    List<AnswerVo> selectAnswerByUserIdAndQuenstionId(Integer userId, Integer quenstionId);
+
+
+
 }

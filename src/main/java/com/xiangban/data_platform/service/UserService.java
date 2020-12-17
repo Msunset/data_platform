@@ -3,23 +3,16 @@ package com.xiangban.data_platform.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xiangban.data_platform.domain.User;
+import com.xiangban.data_platform.domain.dto.*;
+
+import com.xiangban.data_platform.domain.vo.AnswerVo;
 import com.xiangban.data_platform.mapper.UserMapper;
-import com.xiangban.data_platform.utils.HttpClientUtil;
 import com.xiangban.data_platform.utils.JWTUtils;
-import com.xiangban.data_platform.utils.JsonData;
-import com.xiangban.data_platform.utils.page.PageRequest;
-import com.xiangban.data_platform.utils.page.PageResult;
 import com.xiangban.data_platform.utils.page.PageUtil;
-import com.xiangban.data_platform.utils.page.PageUtils;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -56,32 +49,23 @@ public class UserService {
      * @return
      */
     public int save(User user) {
-
-        User byPhone = userMapper.findByPhone(user.getPhone());
-        if (byPhone != null) {
+        User byphone = userMapper.findByPhone(user);//通过手机号和平台查询出的sql语句。
+        if (byphone!=null ){
             return -1;
-        } else {
-//            User user1 = new User();
-            Date date = new Date();
-            user.setCreateTime(date);
-//            Map<String,String> map = new HashMap<>();
-//            map.put("nickname",user.getNickName());
-//            map.put("phone",user.getPhone());
-//            String s = HttpClientUtil.doPost("192.168.1.24:8082/api/v1/user/saveUser", map);
-//            System.out.println(s);
-            return userMapper.saveUser(user);
         }
+        return userMapper.saveUser(user);
     }
 
 
     /**
      * 删除用户
      *
-     * @param userid
+     * @param user
      */
-    public void deleteAll(User userid) {
+    public int deleteAll(User user) {
 
-        userMapper.deleteAll(userid);
+        int delete = userMapper.delete(user);
+        return delete;
     }
 
     /**
@@ -91,20 +75,21 @@ public class UserService {
      * @return
      */
     public int updateUser(User user) {
-        User byPhone = userMapper.findByPhone(user.getPhone());
+        User byPhone = userMapper.findByPhone(user);
         if (byPhone != null) {
-            if (byPhone.getUserid().equals(user.getUserid())) {
-                return userMapper.updateUser(user);
-            } else {
-                return -1;
+                if (byPhone.getId().equals(user.getId())) {
+                            return userMapper.updateUser(user);
+                }
+                    return -1;
             }
-        } else {
+
+
+//        User byidcard= userMapper.findByidcard(user);
+//        if (byidcard.getIdcard().equals(user.getIdcard()) | byidcard.getPhone().equals(user.getPhone())){
+//            return -1;
+//        }
             return userMapper.updateUser(user);
-        }
-
-//        return userMapper.updateUser(user);
     }
-
     /**
      * 登录
      *
@@ -123,6 +108,61 @@ public class UserService {
         }
             return "查无此账号信息";
     }
+    //分页查询
+    public PageInfo<User> getList(User user){
+        PageHelper.startPage(pageUtil.getPage().getPageNum(), pageUtil.getPage().getPageSize());
+        return new PageInfo<>(userMapper.selectPage(user));
+    }
+    //直接查询所有
+    public List<User> getUserList(User user){
+        return userMapper.selectPage(user);
+    }
+    public List<Object> findGsource(){
+        List<Object> list = userMapper.selectGsource();
+//        List<Object> listTemp = new ArrayList();
+//        for (int i = 0 ;i <list.size();i++){
+//            if (list.get(i)!=null){
+//                listTemp.add(list.get(i));
+//                System.out.println(listTemp);
+//            }
+//        }
+//        return listTemp;
+//        list.removeAll(Collections.singleton(null));
+        return list;
+    }
+    //批量单表修改
+    public void updateCustomerService(CustomerServiceDto customerServiceDto){
+
+        userMapper.resetting(customerServiceDto);
+        userMapper.updateCustomerService(customerServiceDto);
+    }
+
+    public User selectUser(User user){
+        return userMapper.selectUser(user.getId());
+    }
+
+
+
+    public User selectUserByPhone(String phone){//根据手机查询所有信息
+       return userMapper.selectUserByPhone(phone);
+    }
+
+    public Object selectAnswerByUserIdAndQuenstionId(AnswerDto answerDto){
+        List<AnswerVo> answerVos = userMapper.selectAnswerByUserIdAndQuenstionId(answerDto.getUserId(), answerDto.getQuenstionId());
+        Object str="";
+        if (answerVos!=null){
+            for (AnswerVo answerVo : answerVos) {
+                str+=answerVo.getAnswer()+",";
+            }
+            if(str!="")
+            {
+                str= ((String) str).substring(0, ((String) str).length()-1);
+
+            }
+        }
+        return str;
+    }
+
 //        if (user == null){
 //            return  "查无此账号信息！";
 //        }else {
@@ -174,14 +214,6 @@ public class UserService {
 //        List<User> sysMenus = userMapper.selectPage();
 //        return new PageInfo<User>(sysMenus);
 //    }
-
-        //分页查询
-        public PageInfo<User> getList(User user){
-            PageHelper.startPage(pageUtil.getPage().getPageNum(), pageUtil.getPage().getPageSize());
-            return new PageInfo<>(userMapper.selectPage(user));
-        }
-
-
 
     }
 

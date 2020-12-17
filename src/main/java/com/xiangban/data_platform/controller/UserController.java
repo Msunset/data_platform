@@ -1,6 +1,12 @@
 package com.xiangban.data_platform.controller;
 
 import com.xiangban.data_platform.domain.User;
+import com.xiangban.data_platform.domain.dto.Answer;
+import com.xiangban.data_platform.domain.dto.AnswerDto;
+import com.xiangban.data_platform.domain.dto.CustomerServiceDto;
+import com.xiangban.data_platform.domain.dto.UserDto;
+
+import com.xiangban.data_platform.domain.vo.AnswerVo;
 import com.xiangban.data_platform.service.UserService;
 import com.xiangban.data_platform.utils.JsonData;
 import com.xiangban.data_platform.utils.page.PageRequest;
@@ -10,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -49,23 +56,14 @@ public class UserController {
 
         int users = userService.save(user);
 
-        if (users==1){
-            return JsonData.buildSuccess("添加成功！");
-        }else {
-            return JsonData.buildError("添加失败，手机号重复！");
-        }
-    }
-    @PostMapping("/savePlatform")
-    @ApiOperation("用户添加仅供平台之间使用")
-    public JsonData savePlatform(@RequestBody User user){
+        if (users == -1){
+            return JsonData.buildError("添加失败，同一平台信息重复！");
 
-        int users = userService.save(user);
-        if (users==1){
-            return JsonData.buildSuccess("添加成功！");
         }else {
-            return JsonData.buildError("添加失败，手机号重复！");
+            return JsonData.buildSuccess("已添加！");
         }
     }
+
 
 
 
@@ -75,9 +73,15 @@ public class UserController {
     @ApiOperation("用户删除")
     public JsonData deleteAll(@RequestBody User userid){
 
-        userService.deleteAll(userid);
+        int deleteAll = userService.deleteAll(userid);
+        if (deleteAll==1){
+            return JsonData.buildSuccess("删除成功！");
+        }else {
+            return JsonData.buildSuccess("删除失败！，无此人信息");
+        }
 
-        return JsonData.buildSuccess("删除成功！");
+
+
     }
 
 
@@ -85,10 +89,10 @@ public class UserController {
     @ApiOperation("用户修改")
     public JsonData update(@RequestBody User user){
         int i = userService.updateUser(user);
-        if (i == -1){
-            return JsonData.buildError("修改失败，手机号重复！");
-        }else {
+        if (i == 1){
             return JsonData.buildSuccess("修改成功！");
+        }else {
+            return JsonData.buildError("修改失败，与同平台信息重复！");
         }
     }
 
@@ -117,8 +121,53 @@ public class UserController {
     @ApiOperation("分页查询")
     public JsonData getList(@RequestBody User user) {
         return JsonData.buildSuccess(userService.getList(user));
+    }
+
+    @PostMapping(value="/getUserList")
+    @ApiOperation("查询所有用户")
+    public JsonData getUserList(@RequestBody User user) {
+        return JsonData.buildSuccess(userService.getUserList(user));
 
     }
+
+    @GetMapping(value="/selectGsource")
+    @ApiOperation("查询街道来源")
+    public JsonData selectGsource() {
+        return JsonData.buildSuccess(userService.findGsource());
+
+    }
+    @PostMapping(value="/updateCustomerService")
+    @ApiOperation("根据id批量修改")
+    public JsonData updateCustomerService(@RequestBody CustomerServiceDto customerServiceDto) {
+
+        userService.updateCustomerService(customerServiceDto);
+        return JsonData.buildSuccess(null);
+    }
+
+    @PostMapping(value="/selectUser")
+    @ApiOperation("根据id查询用户")
+    public JsonData selectUser(@RequestBody User user) {
+
+
+        return JsonData.buildSuccess(userService.selectUser(user));
+    }
+
+    @PostMapping(value="/selectUserByPhone")
+    @ApiOperation("根据手机号查询用户")
+    public JsonData selectUserByPhone(@RequestBody User user) {
+        return JsonData.buildSuccess(userService.selectUserByPhone(user.getPhone()));
+    }
+
+
+    @PostMapping(value="/selectAnswerByUserIdQuenstionId")
+    @ApiOperation("根据用户id，选项id查询选项")
+    public JsonData selectAnswerByUserIdAndQuenstionId(@RequestBody AnswerDto answerDto) {
+        Object o = userService.selectAnswerByUserIdAndQuenstionId(answerDto);
+
+        return JsonData.buildSuccess(o);
+    }
+
+
 
 
 

@@ -1,11 +1,13 @@
 package com.xiangban.data_platform.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.xiangban.data_platform.domain.dto.Quenstionnaire;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author 181****0667
@@ -17,7 +19,10 @@ import java.math.BigDecimal;
 public class User {
 
     @ApiModelProperty(value = "id")
-    private Integer userid;
+    private Integer id;
+
+    @ApiModelProperty(value = "用户id")
+    private String userid;
 
     @ApiModelProperty(value = "用户名")
     private String username;
@@ -52,7 +57,7 @@ public class User {
     @ApiModelProperty(value = "紧急联系电话")
     private String warnusermobile;
 
-    @ApiModelProperty(value = "街道来源（金阊或者是莲花等）")
+    @ApiModelProperty(value = "街道来源（金阊或者是其他等）")
     private String gsource;
 
     @ApiModelProperty(value = "是否盲人")
@@ -88,7 +93,16 @@ public class User {
     @ApiModelProperty(value = "注册地址")
     private String regAddress;
 
+    @ApiModelProperty(value = "客服归属")
+    private String customerService;
+
+    @ApiModelProperty(value = "备注信息")
+    private String remarks;
+
     @ApiModelProperty(value = "1:相伴医路，2：护工联盟，3：养老大街")
     private String platform;
+
+
+
 
 }

@@ -1,5 +1,5 @@
 package com.xiangban.data_platform.utils.page;
-import com.xiangban.data_platform.dto.PageDto;
+import com.xiangban.data_platform.domain.dto.PageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,4 @@ public class PageUtil {
         pageDto.setPageSize(pageSize == null || "".equals(pageSize) ? 10 : Integer.parseInt(pageSize));
         return pageDto;
     }
-
-
-
 }
